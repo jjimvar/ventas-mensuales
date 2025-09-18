@@ -49,6 +49,35 @@ def best_selling_day(data):
             max_sales_day=i
     return max_sales_day+1
 
+def best_3days_period(data):
+    for i in range(0,20,1):
+        data[i]["total_sales"]=data[i]["product_a"]+data[i]["product_b"]+data[i]["product_c"]
+    
+    ordered_data=sorted(sales_data, key=lambda x: x["total_sales"], reverse=True)
+    return f"Day {ordered_data[0]["day"]}, {ordered_data[0]["total_sales"]} total sales; Dia {ordered_data[1]["day"]}, {ordered_data[1]["total_sales"]} total sales; Dia {ordered_data[2]["day"]}, {ordered_data[2]["total_sales"]} total sales" 
+
+
+def worst_selling_day(data):
+    """Finds the day with the lowest total sales."""
+    min_sales=999999
+    min_sales_day=0
+    for i in range(0,20,1):
+        if data[i]["product_a"]+data[i]["product_b"]+data[i]["product_c"]<min_sales:
+            min_sales=data[i]["product_a"]+data[i]["product_b"]+data[i]["product_c"]
+            min_sales_day=i
+    return min_sales_day+1
+
+def range_of_sales(data, product_key):
+    """Calculates the range of sales [min, max] for a specific product."""
+    max_sales=0
+    min_sales=999999
+    for i in range(0,20,1):
+        if data[i][product_key]>max_sales:
+            max_sales=data[i][product_key]
+        if data[i][product_key]<min_sales:
+            min_sales=data[i][product_key]
+    return [min_sales, max_sales]
+
 
 def days_above_threshold(data, product_key, threshold):
     """Counts how many days the sales of a product exceeded a given threshold."""
@@ -80,10 +109,13 @@ def top_product(data):
     return max(max_sales)
 
 
-
 # Function tests
 print("Total sales of product_a:", total_sales_by_product(sales_data, "product_a"))
 print("Average daily sales of product_b:", average_daily_sales(sales_data, "product_b"))
+print("Range with lowest and highest sales of product c:", range_of_sales(sales_data, "product_c"))
 print("Day with highest total sales:", best_selling_day(sales_data))
+print("Day with lowest total sales:", worst_selling_day(sales_data))
+print("Order of best selling days:", best_3days_period(sales_data))
 print("Days when product_c exceeded 300 sales:", days_above_threshold(sales_data, "product_c", 300))
 print("Product with highest total sales:", top_product(sales_data))
+
